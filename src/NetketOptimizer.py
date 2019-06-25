@@ -6,6 +6,7 @@ import os
 import json
 import pandas as pd
 import scipy.stats as sp
+import sys
 
 #%%
 class NetKetOptimizer(object):
@@ -20,13 +21,17 @@ class NetKetOptimizer(object):
         """
 
         self.nk_graph = nk.graph.CustomGraph(edgelist)
-        print("Created graph with {} vertices and {} edges".format(
+        sys.stdout.write("Created graph with {} vertices and {} edges".format(
             self.nk_graph.n_sites, len(self.nk_graph.edges)))
         self.nk_hilbert = (nk
                            .hilbert
                            .CustomHilbert(graph=self.nk_graph, local_states=[-1, 1]))
         sz_sz = [[1, 0, 0, 0], [0, -1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]]
         self.nk_operator = nk.operator.GraphOperator(self.nk_hilbert, bondops=[sz_sz])
+        sys.stdout.write("Cretaed optimizer.")
+        sys.stdout.write("Current state:")
+        for i, v in enumerate(self.nk_sampler.visible):
+            sys.stdout.write("{}th spin orientation is {}".format(i, v))
         self.nk_machine = nk.machine.RbmSpin(hilbert=self.nk_hilbert, alpha=2)
         self.nk_machine.init_random_parameters(sigma=0.1)
         self.nk_sampler = (nk

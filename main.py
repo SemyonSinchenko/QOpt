@@ -1,5 +1,6 @@
 from src.NetketOptimizer import NetKetOptimizer
 import numpy as np
+import sys
 
 if __name__ == "__main__":
     loaded_matrix = np.loadtxt("data/g05_60.0", skiprows=1, dtype=np.int32)
@@ -7,10 +8,10 @@ if __name__ == "__main__":
                 for i in range(loaded_matrix.shape[0])]
     opt = NetKetOptimizer(edgelist)
 
-    print("Start optimizing process...")
+    sys.stdout.write("Start optimizing process...")
     opt.run(2000, "/mountV/volume/learning_log")
-    print("Done.")
+    sys.stdout.write("Done.")
 
-    print("Save the results...")
+    sys.stdout.write("Save the results...")
     opt.get_result(536, "/mountV/volume/")
-    print("Done. Finish. Success.")
+    sys.stdout.write("Done. Finish. Success.")
