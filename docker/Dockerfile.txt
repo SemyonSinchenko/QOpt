@@ -1,0 +1,50 @@
+FROM ubuntu:18.04
+
+LABEL name="NetKetOpt base 0.1"
+LABEL maintainer="Semyon Sinchenko"
+LABEL version="0.1"
+LABEL description="Image with GitRepo and NetKet virtualenv"
+
+SHELL ["/bin/bash", "-c"]
+
+RUN apt-get update && \
+    # Check current shell
+    echo "Current shell:" && \
+    echo $SHELL && \
+    # Install dependences
+    apt-get install -y \
+    # cmake
+    cmake \
+    # OpenMPI (MPICH)
+    mpich \
+    libmpich-dev \
+    # Python
+    python3.6 \
+    python3-dev \
+    # Freefont 2 (for matplotlib)
+    libfreetype6-dev \
+    libxft-dev \
+    libxft2 \
+    # Git
+    git \
+    # Fortran, LAPACK, BLAS
+    gfortran \
+    libblas-dev \
+    liblapack-dev \
+    virtualenv && \
+    # Clean apt-cache
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    # Install netket
+    echo "Availiable python versions:" && \
+    ls /usr/bin/ | grep python | cat &&\
+    yes | virtualenv --python=/usr/bin/python3.6 netket && \
+    source netket/bin/activate && \
+    yes | pip install numpy pandas matplotlib netket scipy && \
+    # Git config && clone
+    git clone https://SemyonSinchenko:Kee>t3pe@github.com/SemyonSinchenko/QOpt.git
+
+# Run
+CMD source netket/bin/activate && \
+    cd QOpt && \
+    mpirun -n 14 python main.py
