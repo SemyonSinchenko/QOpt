@@ -32,7 +32,7 @@ class NetKetOptimizer(object):
         sys.stdout.write("Current state:")
         for i, v in enumerate(self.nk_sampler.visible):
             sys.stdout.write("{}th spin orientation is {}".format(i, v))
-        self.nk_machine = nk.machine.RbmSpin(hilbert=self.nk_hilbert, alpha=2)
+        self.nk_machine = nk.machine.RbmSpin(hilbert=self.nk_hilbert, alpha=1)
         self.nk_machine.init_random_parameters(sigma=0.1)
         self.nk_sampler = (nk
                            .sampler
