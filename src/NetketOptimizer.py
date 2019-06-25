@@ -25,13 +25,12 @@ class NetKetOptimizer(object):
                            .CustomHilbert(graph=self.nk_graph, local_states=[-1, 1]))
         sz_sz = [[1, 0, 0, 0], [0, -1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]]
         self.nk_operator = nk.operator.GraphOperator(self.nk_hilbert, bondops=[sz_sz])
-        self.nk_machine = nk.machine.RbmSpin(hilbert=self.nk_hilbert, alpha=3)
+        self.nk_machine = nk.machine.RbmSpin(hilbert=self.nk_hilbert, alpha=2)
         self.nk_machine.init_random_parameters(sigma=0.1)
         self.nk_sampler = (nk
                            .sampler
-                           .MetropolisExchangePt(machine=self.nk_machine,
-                                                 graph=self.nk_graph,
-                                                 n_replicas=7))
+                           .MetropolisExchange(machine=self.nk_machine,
+                                               graph=self.nk_graph))
         self.nk_op = nk.optimizer.Momentum(0.001, 0.9)
         self.nk_fitter = nk.variational.Vmc(
             hamiltonian=self.nk_operator,
