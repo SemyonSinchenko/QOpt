@@ -42,7 +42,7 @@ RUN apt-get update && \
     source netket/bin/activate && \
     yes | pip install numpy pandas matplotlib netket scipy && \
     # Git config && clone
-    git clone https://SemyonSinchenko:Kee>t3pe@github.com/SemyonSinchenko/QOpt.git
+    git clone https://SemyonSinchenko:'Kee>t3pe'@github.com/SemyonSinchenko/QOpt.git
 
 # Run
 CMD source netket/bin/activate && \
