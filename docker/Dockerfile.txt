@@ -40,11 +40,9 @@ RUN apt-get update && \
     ls /usr/bin/ | grep python | cat &&\
     yes | virtualenv --python=/usr/bin/python3.6 netket && \
     source netket/bin/activate && \
-    yes | pip install numpy pandas matplotlib netket scipy && \
-    # Git config && clone
-    git clone https://SemyonSinchenko:'Kee>t3pe'@github.com/SemyonSinchenko/QOpt.git
+    yes | pip install numpy pandas matplotlib netket scipy
 
 # Run
 CMD source netket/bin/activate && \
-    cd QOpt && \
-    mpirun -n 14 python main.py
+    cd /mountV/volume/QOpt && \
+    mpirun -n 14 main.py

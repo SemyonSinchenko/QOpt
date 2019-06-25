@@ -3,7 +3,8 @@ import numpy as np
 
 if __name__ == "__main__":
     loaded_matrix = np.loadtxt("data/g05_60.0", skiprows=1, dtype=np.int32)
-    edgelist = [[loaded_matrix[i, 0], loaded_matrix[i, 1]] for i in range(loaded_matrix.shape[0])]
+    edgelist = [[loaded_matrix[i, 0] - 1, loaded_matrix[i, 1] - 1]
+                for i in range(loaded_matrix.shape[0])]
     opt = NetKetOptimizer(edgelist)
 
     print("Start optimizing process...")

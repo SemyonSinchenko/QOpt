@@ -20,6 +20,8 @@ class NetKetOptimizer(object):
         """
 
         self.nk_graph = nk.graph.CustomGraph(edgelist)
+        print("Created graph with {} vertices and {} edges".format(
+            self.nk_graph.n_sites, len(self.nk_graph.edges)))
         self.nk_hilbert = (nk
                            .hilbert
                            .CustomHilbert(graph=self.nk_graph, local_states=[-1, 1]))
