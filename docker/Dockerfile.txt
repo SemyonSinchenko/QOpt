@@ -45,4 +45,5 @@ RUN apt-get update && \
 # Run
 CMD source netket/bin/activate && \
     cd /mountV/volume/QOpt && \
-    mpirun -n 14 main.py
+    ls && \
+    mpirun -n 14 python main.py
