@@ -52,18 +52,18 @@ class NetKetOptimizer(object):
         for i, v in enumerate(self.nk_sampler.visible):
             sys.stdout.write("{}th spin orientation is {}".format(i, v))
 
-        self.nk_op = nk.optimizer.Momentum(0.001, 0.95)
+        self.nk_op = nk.optimizer.Momentum(0.003, 0.95)
         self.nk_fitter = nk.variational.Vmc(
             hamiltonian=self.nk_operator,
             sampler=self.nk_sampler,
             optimizer=self.nk_op,
-            n_samples=2500,
-            discarded_samples=500,
+            n_samples=5000,
+            discarded_samples=2500,
             diag_shift=0.03,
             use_iterative=True
         )
 
-    def run(self, n_iter=2000, prefix="learning_log"):
+    def run(self, n_iter=1500, prefix="learning_log"):
         """
         Run the process.
         :param n_iter: number of iterations.
