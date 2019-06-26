@@ -134,8 +134,8 @@ class NetKetOptimizer(object):
         ax[0].legend()
         ax[0].text(
             results_df["iter"].iloc[-1000],
-            -(results_df["e"].iloc[-1] - num_edges) / 2 + 20,
-            "Last value is {}".format(-(results_df["e"].iloc[-1] - num_edges) / 2))
+            -(results_df["e"].iloc[-1] - num_edges) / 2 + 5,
+            "Last value is {.2f}".format(-(results_df["e"].iloc[-1] - num_edges) / 2))
 
         ax[1].errorbar(
             results_df["iter"],
