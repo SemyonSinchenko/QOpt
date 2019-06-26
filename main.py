@@ -9,7 +9,7 @@ if __name__ == "__main__":
     opt = NetKetOptimizer(edgelist)
 
     sys.stdout.write("Start optimizing process...")
-    opt.run(2000, "/mountV/volume/learning_log")
+    opt.run(600, "/mountV/volume/learning_log")
     sys.stdout.write("Done.")
 
     sys.stdout.write("Save the results...")

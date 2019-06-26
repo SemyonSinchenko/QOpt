@@ -52,7 +52,7 @@ class NetKetOptimizer(object):
         for i, v in enumerate(self.nk_sampler.visible):
             sys.stdout.write("{}th spin orientation is {}".format(i, v))
 
-        self.nk_op = nk.optimizer.Momentum(0.003, 0.95)
+        self.nk_op = nk.optimizer.Sgd(0.01, 0.02, 0.995)
         self.nk_fitter = nk.variational.Vmc(
             hamiltonian=self.nk_operator,
             sampler=self.nk_sampler,
@@ -63,7 +63,7 @@ class NetKetOptimizer(object):
             use_iterative=True
         )
 
-    def run(self, n_iter=1500, prefix="learning_log"):
+    def run(self, n_iter=600, prefix="learning_log"):
         """
         Run the process.
         :param n_iter: number of iterations.
@@ -86,6 +86,7 @@ class NetKetOptimizer(object):
         energy_sigma = []
         variance_mean = []
         variance_sigma = []
+        acceptance = []
 
         input_file = self.lr_prefix + ".log"
 
@@ -94,6 +95,7 @@ class NetKetOptimizer(object):
 
             for iteration in data["Output"]:
                 iters.append(iteration["Iteration"])
+                acceptance.append(iteration["Acceptance"])
                 energy_mean.append(iteration["Energy"]["Mean"])
                 energy_sigma.append(iteration["Energy"]["Sigma"])
                 variance_mean.append(iteration["EnergyVariance"]["Mean"])
@@ -104,6 +106,7 @@ class NetKetOptimizer(object):
         results_df = pd.DataFrame(
             dict(
                 iter=iters,
+                accept=acceptance,
                 e=energy_mean,
                 e_std=energy_sigma,
                 e_err95=[e * p95 for e in energy_sigma],
@@ -118,7 +121,7 @@ class NetKetOptimizer(object):
 
         num_edges = len(self.nk_graph.edges)
 
-        f, ax = pylab.subplots(nrows=1, ncols=2, figsize=(16, 5))
+        f, ax = pylab.subplots(nrows=1, ncols=3, figsize=(20, 5))
         ax[0].errorbar(results_df["iter"],
                        -(results_df["e"] - num_edges) / 2,
                        yerr=results_df["e_err95"],
@@ -148,6 +151,12 @@ class NetKetOptimizer(object):
         ax[1].set_title("Variance of energy by iterations")
         ax[1].grid()
 
+        ax[2].plot(results_df["iter"], results_df["accept"], ".-")
+        ax[2].set_xlabel("Iteration")
+        ax[2].set_ylabel("Acceptance ratio")
+        ax[2].set_title("Acceptance ration by iterations")
+        ax[2].grid()
+
         f.tight_layout()
 
         out_path = os.path.join(prefix, "resultPlot.png")
@@ -158,11 +167,13 @@ class NetKetOptimizer(object):
         np.savetxt(state_file_path, self.nk_sampler.visible, ".1f")
 
         sys.stdout.write("Generate some samples...")
+        samples = []
         for i in range(1000):
             self.nk_sampler.sweep()
+            samples.append(self.nk_sampler.visible)
 
-        last_state_file_path = os.path.join(prefix, "lastStateAdvanced_1000steps.txt")
-        np.savetxt(last_state_file_path, self.nk_sampler.visible, ".1f")
+        last_state_file_path = os.path.join(prefix, "stateAdvanced_1000steps.txt")
+        np.savetxt(last_state_file_path, np.array(samples), fmt="%.1f")
 
 
 

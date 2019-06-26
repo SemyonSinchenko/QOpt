@@ -42,7 +42,7 @@ results_df = pd.DataFrame(
 
 num_edges = 884
 
-f, ax = pylab.subplots(nrows=1, ncols=2, figsize=(16, 5))
+f, ax = pylab.subplots(nrows=1, ncols=3, figsize=(20, 5))
 ax[0].errorbar(results_df["iter"],
                -(results_df["e"] - num_edges) / 2,
                yerr=results_df["e_err95"],
