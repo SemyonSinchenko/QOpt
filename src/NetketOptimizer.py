@@ -21,6 +21,7 @@ class NetKetOptimizer(object):
         """
 
         self.nk_graph = nk.graph.CustomGraph(edgelist)
+        input_size = len(edgelist)
         sys.stdout.write("Created graph with {} vertices and {} edges".format(
             self.nk_graph.n_sites, len(self.nk_graph.edges)))
         self.nk_hilbert = (nk
@@ -29,7 +30,16 @@ class NetKetOptimizer(object):
         sz_sz = [[1, 0, 0, 0], [0, -1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]]
         self.nk_operator = nk.operator.GraphOperator(self.nk_hilbert, bondops=[sz_sz])
 
-        self.nk_machine = nk.machine.RbmSpin(hilbert=self.nk_hilbert, alpha=1)
+        # self.nk_machine = nk.machine.RbmSpin(hilbert=self.nk_hilbert, alpha=1)
+        self.nk_machine = nk.machine.FFNN(
+            hilbert=self.nk_hilbert,
+            layers=(
+                nk.layer.FullyConnected(input_size=input_size, output_size=20, use_bias=True),
+                nk.layer.FullyConnected(input_size=20, output_size=20, use_bias=True),
+                nk.layer.Lncosh(input_size=20),
+                nk.layer.SumOutput(input_size=20)
+            )
+        )
         self.nk_machine.init_random_parameters(sigma=0.1)
         self.nk_sampler = (nk
                            .sampler
@@ -46,7 +56,7 @@ class NetKetOptimizer(object):
             hamiltonian=self.nk_operator,
             sampler=self.nk_sampler,
             optimizer=self.nk_op,
-            n_samples=1000)
+            n_samples=2000)
 
     def run(self, n_iter=1500, prefix="learning_log"):
         """
@@ -72,7 +82,7 @@ class NetKetOptimizer(object):
         variance_mean = []
         variance_sigma = []
 
-        input_file = os.path.join(self.lr_prefix, ".log")
+        input_file = self.lr_prefix + ".log"
 
         with open(input_file) as f:
             data = json.load(f)
