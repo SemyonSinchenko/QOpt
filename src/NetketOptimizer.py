@@ -33,9 +33,9 @@ class NetKetOptimizer(object):
         self.nk_machine = nk.machine.FFNN(
             hilbert=self.nk_hilbert,
             layers=(
-                nk.layer.FullyConnected(input_size=self.nk_graph.n_sites, output_size=20, use_bias=True),
+                nk.layer.FullyConnected(input_size=self.nk_graph.n_sites, output_size=30, use_bias=True),
+                nk.layer.FullyConnected(input_size=30, output_size=20, use_bias=True),
                 nk.layer.FullyConnected(input_size=20, output_size=10, use_bias=True),
-                nk.layer.FullyConnected(input_size=10, output_size=10, use_bias=True),
                 nk.layer.FullyConnected(input_size=10, output_size=10, use_bias=True),
                 nk.layer.Lncosh(input_size=10),
                 nk.layer.SumOutput(input_size=10)
@@ -57,7 +57,11 @@ class NetKetOptimizer(object):
             hamiltonian=self.nk_operator,
             sampler=self.nk_sampler,
             optimizer=self.nk_op,
-            n_samples=2500)
+            n_samples=2500,
+            discarded_samples=500,
+            diag_shift=0.03,
+            use_iterative=True
+        )
 
     def run(self, n_iter=2000, prefix="learning_log"):
         """
