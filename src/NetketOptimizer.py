@@ -34,10 +34,9 @@ class NetKetOptimizer(object):
         self.nk_machine = nk.machine.FFNN(
             hilbert=self.nk_hilbert,
             layers=(
-                nk.layer.FullyConnected(input_size=input_size, output_size=20, use_bias=True),
-                nk.layer.FullyConnected(input_size=20, output_size=20, use_bias=True),
-                nk.layer.Lncosh(input_size=20),
-                nk.layer.SumOutput(input_size=20)
+                nk.layer.FullyConnected(input_size=input_size, output_size=30, use_bias=True),
+                nk.layer.Lncosh(input_size=30),
+                nk.layer.SumOutput(input_size=30)
             )
         )
         self.nk_machine.init_random_parameters(sigma=0.1)
