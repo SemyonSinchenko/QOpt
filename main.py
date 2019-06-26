@@ -3,7 +3,7 @@ import numpy as np
 import sys
 
 if __name__ == "__main__":
-    loaded_matrix = np.loadtxt("/mountV/volume/QOpt/data/g05_60.0", skiprows=1, dtype=np.int32)
+    loaded_matrix = np.loadtxt("/mountV/volume/QOpt/data/g05_60.0", dtype=np.int32)
     edgelist = [[loaded_matrix[i, 0] - 1, loaded_matrix[i, 1] - 1]
                 for i in range(loaded_matrix.shape[0])]
     opt = NetKetOptimizer(edgelist)

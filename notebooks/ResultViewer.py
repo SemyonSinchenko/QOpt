@@ -7,72 +7,40 @@ import json
 import pandas as pd
 
 #%%
-iters = []
-energy_mean = []
-energy_sigma = []
-variance_mean = []
-variance_sigma = []
-exact = 536
 
-input_file = os.path.join("results", "RbmSpin", "learning_log.log")
+NUM_EDGES = 883
+EXACT_SOLUTION = 536
+samples = np.loadtxt(os.path.join("results", "FFNN", "stateAdvanced_1000steps.txt"))
 
-with open(input_file) as f:
-    data = json.load(f)
+loaded_matrix = np.loadtxt("data/g05_60.0", skiprows=0, dtype=np.int32)
+edgelist = [[loaded_matrix[i, 0] - 1, loaded_matrix[i, 1] - 1]
+            for i in range(loaded_matrix.shape[0])]
 
-    for iteration in data["Output"]:
-        iters.append(iteration["Iteration"])
-        energy_mean.append(iteration["Energy"]["Mean"])
-        energy_sigma.append(iteration["Energy"]["Sigma"])
-        variance_mean.append(iteration["EnergyVariance"]["Mean"])
-        variance_sigma.append(iteration["EnergyVariance"]["Sigma"])
+#%%
 
-p95 = sp.distributions.norm().ppf(0.975)
+def score(state, edges):
+    r = -NUM_EDGES
+    for e in edges:
+        r += state[e[0]] * state[e[1]]
 
-results_df = pd.DataFrame(
-    dict(
-        iter=iters,
-        e=energy_mean,
-        e_std=energy_sigma,
-        e_err95=[e * p95 for e in energy_sigma],
-        e_var=variance_mean,
-        e_var_std=variance_sigma,
-        e_var_err95=[e * p95 for e in variance_sigma]
-    )
-)
+    return -r / 2
 
-num_edges = 884
+results = []
+for i in range(samples.shape[0]):
+    results.append(score(samples[i, :], edgelist))
 
-f, ax = pylab.subplots(nrows=1, ncols=3, figsize=(20, 5))
-ax[0].errorbar(results_df["iter"],
-               -(results_df["e"] - num_edges) / 2,
-               yerr=results_df["e_err95"],
-               label="Learning curve",
-               color="red")
-ax[0].plot(results_df["iter"],
-           np.ones(results_df.shape[0]) * exact,
-           "--", label="Exact solution")
-ax[0].set_xlabel("Iteration")
-ax[0].set_ylabel("CutSize")
-ax[0].set_title("CutSize by iterations")
-ax[0].legend()
-ax[0].grid()
-ax[0].text(
-    results_df["iter"].iloc[-1000],
-    -(results_df["e"].iloc[-1] - num_edges) / 2 + 20,
-    "Last value is {}".format(-(results_df["e"].iloc[-1] - num_edges) / 2))
+results = np.array(results)
 
-ax[1].errorbar(
-    results_df["iter"],
-    results_df["e_var"],
-    yerr=results_df["e_var_err95"],
-    color="red"
-)
-ax[1].set_xlabel("Iteration")
-ax[1].set_ylabel("Variance")
-ax[1].set_title("Variance of energy by iterations")
+#%%
 
-f.tight_layout()
-f.savefig(os.path.join("results", "RbmSpin", "learningCurve.png"))
-f.show()
+pylab.figure(figsize=(8, 4))
+pylab.plot(np.arange(results.shape[0]), results, ".-", label="Results")
+pylab.plot(np.arange(results.shape[0]),
+           np.ones(results.shape[0]) * EXACT_SOLUTION, "--", label="Exact")
+pylab.xlabel("Sample number")
+pylab.ylabel("CutSize")
+pylab.legend()
+pylab.grid()
+pylab.savefig(os.path.join("results", "FFNN", "SamplesResults.png"))
 
 #%%

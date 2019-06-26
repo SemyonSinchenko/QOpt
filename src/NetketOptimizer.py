@@ -7,6 +7,7 @@ import json
 import pandas as pd
 import scipy.stats as sp
 import sys
+import time
 
 #%%
 class NetKetOptimizer(object):
@@ -52,7 +53,7 @@ class NetKetOptimizer(object):
         for i, v in enumerate(self.nk_sampler.visible):
             sys.stdout.write("{}th spin orientation is {}".format(i, v))
 
-        self.nk_op = nk.optimizer.Sgd(0.015, 0.02, 0.995)
+        self.nk_op = nk.optimizer.Sgd(0.01, 0.02, 0.999)
         self.nk_fitter = nk.variational.Vmc(
             hamiltonian=self.nk_operator,
             sampler=self.nk_sampler,
@@ -95,7 +96,7 @@ class NetKetOptimizer(object):
 
             for iteration in data["Output"]:
                 iters.append(iteration["Iteration"])
-                acceptance.append(iteration["Acceptance"])
+                acceptance.append(iteration["Acceptance"][0])
                 energy_mean.append(iteration["Energy"]["Mean"])
                 energy_sigma.append(iteration["Energy"]["Sigma"])
                 variance_mean.append(iteration["EnergyVariance"]["Mean"])
@@ -138,7 +139,7 @@ class NetKetOptimizer(object):
         ax[0].text(
             int(results_df["iter"].iloc[-1] / 2),
             -(results_df["e"].iloc[-1] - num_edges) / 2 + 5,
-            "Last value is {.2f}".format(-(results_df["e"].iloc[-1] - num_edges) / 2))
+            "Last value is {:.2f}".format(-(results_df["e"].iloc[-1] - num_edges) / 2))
 
         ax[1].errorbar(
             results_df["iter"],
@@ -169,11 +170,12 @@ class NetKetOptimizer(object):
         sys.stdout.write("Generate some samples...")
         samples = []
         for i in range(1000):
+            time.sleep(0.01)
             self.nk_sampler.sweep()
             samples.append(self.nk_sampler.visible)
 
         last_state_file_path = os.path.join(prefix, "stateAdvanced_1000steps.txt")
-        np.savetxt(last_state_file_path, np.array(samples), fmt="%.1f")
+        np.savetxt(last_state_file_path, np.array(samples))
 
 
 
