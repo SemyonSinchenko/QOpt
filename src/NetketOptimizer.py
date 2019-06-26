@@ -154,5 +154,8 @@ class NetKetOptimizer(object):
 
         f.savefig(out_path, dpi=300)
 
+        state_file_path = os.path.join(prefix, "lastState.txt")
+        np.savetxt(state_file_path, self.nk_sampler.visible, ".1f")
+
 
 
