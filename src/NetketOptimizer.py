@@ -21,7 +21,6 @@ class NetKetOptimizer(object):
         """
 
         self.nk_graph = nk.graph.CustomGraph(edgelist)
-        input_size = len(edgelist)
         sys.stdout.write("Created graph with {} vertices and {} edges".format(
             self.nk_graph.n_sites, len(self.nk_graph.edges)))
         self.nk_hilbert = (nk
@@ -34,9 +33,10 @@ class NetKetOptimizer(object):
         self.nk_machine = nk.machine.FFNN(
             hilbert=self.nk_hilbert,
             layers=(
-                nk.layer.FullyConnected(input_size=input_size, output_size=30, use_bias=True),
-                nk.layer.Lncosh(input_size=30),
-                nk.layer.SumOutput(input_size=30)
+                nk.layer.FullyConnected(input_size=self.nk_graph.n_sites, output_size=20, use_bias=True),
+                nk.layer.FullyConnected(input_size=20, output_size=10, use_bias=True),
+                nk.layer.Lncosh(input_size=10),
+                nk.layer.SumOutput(input_size=10)
             )
         )
         self.nk_machine.init_random_parameters(sigma=0.1)
