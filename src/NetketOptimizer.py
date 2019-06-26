@@ -52,7 +52,7 @@ class NetKetOptimizer(object):
         for i, v in enumerate(self.nk_sampler.visible):
             sys.stdout.write("{}th spin orientation is {}".format(i, v))
 
-        self.nk_op = nk.optimizer.Sgd(0.01, 0.02, 0.995)
+        self.nk_op = nk.optimizer.Sgd(0.015, 0.02, 0.995)
         self.nk_fitter = nk.variational.Vmc(
             hamiltonian=self.nk_operator,
             sampler=self.nk_sampler,
@@ -136,7 +136,7 @@ class NetKetOptimizer(object):
         ax[0].grid()
         ax[0].legend()
         ax[0].text(
-            results_df["iter"].iloc[-1000],
+            int(results_df["iter"].iloc[-1] / 2),
             -(results_df["e"].iloc[-1] - num_edges) / 2 + 5,
             "Last value is {.2f}".format(-(results_df["e"].iloc[-1] - num_edges) / 2))
 
