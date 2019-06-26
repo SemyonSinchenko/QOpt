@@ -14,7 +14,7 @@ variance_mean = []
 variance_sigma = []
 exact = 536
 
-input_file = os.path.join("results", "learning_log.log")
+input_file = os.path.join("results", "RbmSpin", "learning_log.log")
 
 with open(input_file) as f:
     data = json.load(f)
@@ -56,6 +56,10 @@ ax[0].set_ylabel("CutSize")
 ax[0].set_title("CutSize by iterations")
 ax[0].legend()
 ax[0].grid()
+ax[0].text(
+    results_df["iter"].iloc[-1000],
+    -(results_df["e"].iloc[-1] - num_edges) / 2 + 20,
+    "Last value is {}".format(-(results_df["e"].iloc[-1] - num_edges) / 2))
 
 ax[1].errorbar(
     results_df["iter"],
@@ -68,7 +72,7 @@ ax[1].set_ylabel("Variance")
 ax[1].set_title("Variance of energy by iterations")
 
 f.tight_layout()
-f.savefig(os.path.join("results", "learningCurve.png"))
+f.savefig(os.path.join("results", "RbmSpin", "learningCurve.png"))
 f.show()
 
 #%%
