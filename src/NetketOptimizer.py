@@ -35,6 +35,8 @@ class NetKetOptimizer(object):
             layers=(
                 nk.layer.FullyConnected(input_size=self.nk_graph.n_sites, output_size=20, use_bias=True),
                 nk.layer.FullyConnected(input_size=20, output_size=10, use_bias=True),
+                nk.layer.FullyConnected(input_size=10, output_size=10, use_bias=True),
+                nk.layer.FullyConnected(input_size=10, output_size=10, use_bias=True),
                 nk.layer.Lncosh(input_size=10),
                 nk.layer.SumOutput(input_size=10)
             )
@@ -50,14 +52,14 @@ class NetKetOptimizer(object):
         for i, v in enumerate(self.nk_sampler.visible):
             sys.stdout.write("{}th spin orientation is {}".format(i, v))
 
-        self.nk_op = nk.optimizer.Momentum(0.001, 0.9)
+        self.nk_op = nk.optimizer.Momentum(0.0001, 0.95)
         self.nk_fitter = nk.variational.Vmc(
             hamiltonian=self.nk_operator,
             sampler=self.nk_sampler,
             optimizer=self.nk_op,
-            n_samples=2000)
+            n_samples=2500)
 
-    def run(self, n_iter=1500, prefix="learning_log"):
+    def run(self, n_iter=2000, prefix="learning_log"):
         """
         Run the process.
         :param n_iter: number of iterations.
@@ -124,6 +126,7 @@ class NetKetOptimizer(object):
         ax[0].set_xlabel("Iteration")
         ax[0].set_ylabel("CutSize")
         ax[0].set_title("CutSize by iterations")
+        ax[0].grid()
         ax[0].legend()
 
         ax[1].errorbar(
@@ -135,6 +138,7 @@ class NetKetOptimizer(object):
         ax[1].set_xlabel("Iteration")
         ax[1].set_ylabel("Variance")
         ax[1].set_title("Variance of energy by iterations")
+        ax[1].grid()
 
         f.tight_layout()
 
