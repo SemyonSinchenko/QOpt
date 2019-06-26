@@ -58,7 +58,7 @@ class NetKetOptimizer(object):
             sampler=self.nk_sampler,
             optimizer=self.nk_op,
             n_samples=5000,
-            discarded_samples=2500,
+            discarded_samples=3500,
             diag_shift=0.03,
             use_iterative=True
         )
@@ -156,6 +156,13 @@ class NetKetOptimizer(object):
 
         state_file_path = os.path.join(prefix, "lastState.txt")
         np.savetxt(state_file_path, self.nk_sampler.visible, ".1f")
+
+        sys.stdout.write("Generate some samples...")
+        for i in range(1000):
+            self.nk_sampler.sweep()
+
+        last_state_file_path = os.path.join(prefix, "lastStateAdvanced_1000steps.txt")
+        np.savetxt(last_state_file_path, self.nk_sampler.visible, ".1f")
 
 
 
