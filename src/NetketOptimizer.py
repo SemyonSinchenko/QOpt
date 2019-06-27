@@ -52,7 +52,7 @@ class NetKetOptimizer(object):
         for i, v in enumerate(self.nk_sampler.visible):
             sys.stdout.write("{}th spin orientation is {}".format(i, v))
 
-        self.nk_op = nk.optimizer.Momentum(0.01, 0.09)
+        self.nk_op = nk.optimizer.Momentum(0.008, 0.09)
         self.nk_fitter = nk.variational.Vmc(
             hamiltonian=self.nk_operator,
             sampler=self.nk_sampler,
