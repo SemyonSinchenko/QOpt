@@ -15,7 +15,7 @@ class NetKetOptimizer(object):
     Neural Quantum States MaxCut problem.
     """
 
-    def __init__(self, edgelist):
+    def __init__(self, edgelist, layers=[30, 20, 10, 10]):
         """
         Initialize the graph.
         :param edgelist:
@@ -30,16 +30,15 @@ class NetKetOptimizer(object):
         sz_sz = [[1, 0, 0, 0], [0, -1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]]
         self.nk_operator = nk.operator.GraphOperator(self.nk_hilbert, bondops=[sz_sz])
 
-        # self.nk_machine = nk.machine.RbmSpin(hilbert=self.nk_hilbert, alpha=1)
         self.nk_machine = nk.machine.FFNN(
             hilbert=self.nk_hilbert,
             layers=(
-                nk.layer.FullyConnected(input_size=self.nk_graph.n_sites, output_size=30, use_bias=True),
-                nk.layer.FullyConnected(input_size=30, output_size=20, use_bias=True),
-                nk.layer.FullyConnected(input_size=20, output_size=10, use_bias=True),
-                nk.layer.FullyConnected(input_size=10, output_size=10, use_bias=True),
-                nk.layer.Lncosh(input_size=10),
-                nk.layer.SumOutput(input_size=10)
+                nk.layer.FullyConnected(input_size=self.nk_graph.n_sites, output_size=layers[0], use_bias=True),
+                nk.layer.FullyConnected(input_size=layers[0], output_size=layers[1], use_bias=True),
+                nk.layer.FullyConnected(input_size=layers[1], output_size=layers[2], use_bias=True),
+                nk.layer.FullyConnected(input_size=layers[2], output_size=layers[3], use_bias=True),
+                nk.layer.Lncosh(input_size=layers[3]),
+                nk.layer.SumOutput(input_size=layers[3])
             )
         )
         self.nk_machine.init_random_parameters(sigma=0.1)
@@ -138,7 +137,7 @@ class NetKetOptimizer(object):
         ax[0].legend()
         ax[0].text(
             int(results_df["iter"].iloc[-1] / 2),
-            -(results_df["e"].iloc[-1] - num_edges) / 2 + 5,
+            -(results_df["e"].iloc[-1] - num_edges) / 2 + 2,
             "Last value is {:.2f}".format(-(results_df["e"].iloc[-1] - num_edges) / 2))
 
         ax[1].errorbar(
@@ -169,8 +168,7 @@ class NetKetOptimizer(object):
 
         sys.stdout.write("Generate some samples...")
         samples = []
-        for i in range(1000):
-            time.sleep(0.01)
+        for i in range(2000):
             self.nk_sampler.sweep()
             samples.append(self.nk_sampler.visible)
 
