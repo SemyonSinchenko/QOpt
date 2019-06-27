@@ -1,18 +1,15 @@
 #%%
 import os
-import scipy.stats as sp
 import pylab
 import numpy as np
-import json
-import pandas as pd
 
 #%%
 
-NUM_EDGES = 883
-EXACT_SOLUTION = 536
-samples = np.loadtxt(os.path.join("results", "FFNN", "stateAdvanced_1000steps.txt"))
+NUM_EDGES = 2474
+EXACT_SOLUTION = 1430
+samples = np.loadtxt(os.path.join("results", "FFNN", "100vertexGraph","stateAdvanced_1000steps.txt"))
 
-loaded_matrix = np.loadtxt("data/g05_60.0", skiprows=0, dtype=np.int32)
+loaded_matrix = np.loadtxt("data/g05_100.0", skiprows=0, dtype=np.int32)
 edgelist = [[loaded_matrix[i, 0] - 1, loaded_matrix[i, 1] - 1]
             for i in range(loaded_matrix.shape[0])]
 
@@ -41,6 +38,6 @@ pylab.xlabel("Sample number")
 pylab.ylabel("CutSize")
 pylab.legend()
 pylab.grid()
-pylab.savefig(os.path.join("results", "FFNN", "SamplesResults.png"))
+pylab.savefig(os.path.join("results", "FFNN", "100vertexGraph", "SamplesResults.png"))
 
 #%%
