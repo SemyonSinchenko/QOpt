@@ -57,7 +57,7 @@ class NetKetOptimizer(object):
             hamiltonian=self.nk_operator,
             sampler=self.nk_sampler,
             optimizer=self.nk_op,
-            n_samples=intself.nk_graph.n_sites * 100,
+            n_samples=self.nk_graph.n_sites * 100,
             discarded_samples= self.nk_graph.n_sites * 30,
             diag_shift=0.03,
             use_iterative=True
