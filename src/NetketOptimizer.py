@@ -57,8 +57,8 @@ class NetKetOptimizer(object):
             hamiltonian=self.nk_operator,
             sampler=self.nk_sampler,
             optimizer=self.nk_op,
-            n_samples=5000,
-            discarded_samples=3500,
+            n_samples=intself.nk_graph.n_sites * 100,
+            discarded_samples= self.nk_graph.n_sites * 30,
             diag_shift=0.03,
             use_iterative=True
         )
@@ -164,7 +164,7 @@ class NetKetOptimizer(object):
         f.savefig(out_path, dpi=300)
 
         state_file_path = os.path.join(prefix, "lastState.txt")
-        np.savetxt(state_file_path, self.nk_sampler.visible, ".1f")
+        np.savetxt(state_file_path, self.nk_sampler.visible)
 
         sys.stdout.write("Generate some samples...")
         samples = []
