@@ -52,13 +52,13 @@ class NetKetOptimizer(object):
         for i, v in enumerate(self.nk_sampler.visible):
             sys.stdout.write("{}th spin orientation is {}".format(i, v))
 
-        self.nk_op = nk.optimizer.Sgd(0.01, 0.02, 0.999)
+        self.nk_op = nk.optimizer.Momentum(0.01, 0.09)
         self.nk_fitter = nk.variational.Vmc(
             hamiltonian=self.nk_operator,
             sampler=self.nk_sampler,
             optimizer=self.nk_op,
             n_samples=self.nk_graph.n_sites * 100,
-            discarded_samples= self.nk_graph.n_sites * 30,
+            discarded_samples= self.nk_graph.n_sites * 50,
             diag_shift=0.03,
             use_iterative=True
         )
